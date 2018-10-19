@@ -4,11 +4,13 @@ import random
 def palabras_aleatorias(arc_palabras):
 	'''recibe un archivo csv con palabras|silabas|definicion, devuelve palabras al azar'''
 	
-def fraseEnDos(frase):
+def partir_frase(frase):
 	'''recibe una lista que contiene la frase, devuelve una lista con la frase partida en dos'''
 	print(''.join(frase[0].split()))
 	fraseJunta = ''.join(frase[0].split())
-	return fraseJunta // 2
+	print([fraseJunta[:len(fraseJunta)//2],fraseJunta[(len(fraseJunta)//2)+1:]])
+	return [fraseJunta[:len(fraseJunta)//2],fraseJunta[(len(fraseJunta)//2)+1:]]
+
 	
 def elegir_frase(arc_frases):
 	'''recibe un archivo csv con el formato frases|columas|autor, elige una frase al azar y devuelve una lista
@@ -24,12 +26,12 @@ def elegir_frase(arc_frases):
 	claveAlea = random.choice(listaClaves)
 	valorClaveAlea = frases.get(claveAlea)
 	print([claveAlea.strip('"'), valorClaveAlea[0], valorClaveAlea[1]])
-	return [claveAlea, valorClaveAlea[0], valorClaveAlea[1]]
+	return [claveAlea.strip('"'), valorClaveAlea[0], valorClaveAlea[1]]
 
 def main():
 	
 	frase_aleatoria = elegir_frase('frases.csv')
-	numFilas = fraseEnDos(frase_aleatoria)
+	numFilas = partir_frase(frase_aleatoria)
 	palabras_aleatorias('palabras.csv', numFilas)
 
 main()
