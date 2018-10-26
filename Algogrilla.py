@@ -4,7 +4,7 @@ import random
 def main():
 	
 	frase_aleatoria = elegir_frase('frases.csv')
-	elegir_palabras('palabras.csv', frase_aleatoria)
+	frases_elegidas = elegir_palabras('palabras.csv', frase_aleatoria)
 
 
 def elegir_palabras(arc_palabras, frase_aleatoria):
@@ -16,20 +16,23 @@ def elegir_palabras(arc_palabras, frase_aleatoria):
 
 	listaPalabra = []
 	listaDePalabras = list(palabras.keys())
-	numPosicion = frase_aleatoria[1].split(',') #lista que contiene las columnas
+	numPos = frase_aleatoria[1].split(',') #lista que contiene las columnas
 	maximo = max(len(listFrase[0]),len(listFrase[1]))
-	for i in range(maximo):
-		for c in listaDePalabras:
+	while len(listaPalabra) < maximo:
+		for i in range(maximo):
+			c = random.choice(listaDePalabras)
 			if c in listaPalabra:
 				continue
-			if len(listFrase[0]) > len(listFrase[1]) and i == (maximo - 1):
-				if len(c) < len(numPos[1]) and c[int(numPos[0])] == listFrase[0][i]:
+			if len(listFrase[0]) > len(listFrase[1]) and i == (maximo-1):
+				if int(numPos[0]) < len(c) < int(numPos[1]):
+					if len(c) < int(numPos[1]) and c[int(numPos[0])] == listFrase[0][i]:
+						listaPalabra.append(c)
+						break
+				continue
+			if len(c) > int(numPos[1]):
+				if c[int(numPos[0])] == listFrase[0][i] and c[int(numPos[1])] == listFrase[1][i]:
 					listaPalabra.append(c)
 					break
-				continue
-			if c[int(numPos[0])] == listFrase[0][i] and c[int(numPos[1])] == listFrase[1][i]:
-				listaPalabra.append(c)
-				break
 	print(listaPalabra)
 	return listaPalabra
 def partir_frase(frase):
@@ -65,11 +68,11 @@ def abrirArchivo(archivo):
 	with open(archivo,encoding= "utf8") as arch:
 		for linea in arch:
 			try:
-				columna1,columna2,columna3 = linea.rstrip('\n').split('|')
+				clave,valor1,valor2 = linea.rstrip('\n').split('|')
 			except:
 				continue
-			if not columna1 in diccionario:
-				diccionario[columna1] = [columna2,columna3]
+			if not clave in diccionario:
+				diccionario[clave] = [valor1,valor2]
 	return diccionario
 
 
