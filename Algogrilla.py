@@ -11,15 +11,14 @@ def elegir_palabras(arc_palabras, frase_aleatoria):
 	'''recibe un archivo csv con palabras|silabas|definicion y una lista que contiene una frase,columnas,autor
 	y devuelve una lista con palabras al azar'''
 	listFrase = partir_frase(frase_aleatoria)
-	print(len(listFrase[0]), len(listFrase[1]))
 	palabras = abrirArchivo(arc_palabras)
 
 	listaPalabra = []
 	listaDePalabras = list(palabras.keys())
 	numPos = frase_aleatoria[1].split(',') #lista que contiene las columnas
 	maximo = max(len(listFrase[0]),len(listFrase[1]))
-	while len(listaPalabra) < maximo:
-		for i in range(maximo):
+	for i in range(maximo):
+		for o in listaDePalabras:
 			c = random.choice(listaDePalabras)
 			if c in listaPalabra:
 				continue
