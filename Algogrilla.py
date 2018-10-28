@@ -1,10 +1,80 @@
-import csv
+
 import random
+import argparse
 
 def main():
+
+	parser = argparse.ArgumentParser(description='Algogrillas')
+	parser.add_argument('-s', '--solucion', action='store_true', help='imprimir la solución')
+	#parser.add_argument('-n', '--numero', help='número de algogrilla')
+	args = parser.parse_args()
+	imprimir_solucion = args.solucion # es True si el usuario incluyó la opción -s
 	
 	frase_aleatoria = elegir_frase('frases.csv')
-	frases_elegidas = elegir_palabras('palabras.csv', frase_aleatoria)
+	palabras_elegidas = elegir_palabras('palabras.csv', frase_aleatoria)
+
+	numpos = frase_aleatoria[1].split(',')
+
+	imprimirs(palabras_elegidas,numpos,imprimir_solucion)
+
+	while True:
+		try:
+			numero = int(input('Ingrese un numero de palabra o 0 para terminar: '))
+		except ValueError:
+			print('No es un numero')
+			continue
+		if numero == 0:
+			return 'Fin del Juego'
+		palabra = input('ingrese la palabra: ')
+		if not palabra.isalpha():
+			print('No es una palabra')
+			continue
+
+		numPos = frase_aleatoria[1].split(',')
+
+		imprimir(numero, palabra, palabras_elegidas, numPos )
+
+def imprimirs(palb,numpos, imprimir_solucion):
+	print('GENERADOR DE ALGOGRILLAS')
+	print()
+
+	for fila in range(len(palb)):
+			if fila < 9:
+				print('{}.  {}'.format(fila+1, '.'*len(palb[fila])))
+			if fila >= 10:
+				print('{}. {}'.format(fila + 1, '.'*len(palb[fila])))
+			print()
+			print(DEFINICIONES)
+
+	print()
+	if imprimir_solucion:
+		print('SOLUCION')
+		print()
+		for fila in range(len(palb)):
+			if fila < 9:
+				print('{}.  {}'.format(fila+1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
+					palb[fila][(int(numpos[0])+1):int(numpos[1])] + palb[fila][int(numpos[1])].upper() + palb[fila][int(numpos[1])+1:]))
+			if fila >= 9:
+				if len(palb[fila]) == int(numpos[1]):
+					print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
+					palb[fila][(int(numpos[0])+1):int(numpos[1])] + palb[fila][int(numpos[1])].upper()))
+				if len(palb[fila]) < int(numpos[1]):
+					print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
+					palb[fila][(int(numpos[0])+1):int(numpos[1])]))
+
+				print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
+					palb[fila][(int(numpos[0])+1):int(numpos[1])] + palb[fila][int(numpos[1])].upper() + palb[fila][int(numpos[1])+1:]))
+		return None
+
+
+'''def imprimir(num, pal, palb, pos):
+	numCorrectos = []
+	for fila in range(len(palb)):
+		for columnas in fila:
+			if (num -1)==fila and pal == palb[fila]:
+				numCorrectos.append(num)'''
+
+
 
 
 def elegir_palabras(arc_palabras, frase_aleatoria):
