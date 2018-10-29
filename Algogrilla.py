@@ -95,23 +95,26 @@ def imprimir(numero, palabra, palb, pos, dicDePalabras,numCorrectos):
 					if fila < 9:
 						print('{}.  {}'.format(fila+1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
 						palb[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper() + palb[fila][int(pos[1])+1:]))
+						break
 					if fila >= 9:
 						if len(palb[fila]) == int(pos[1]):
 							print('{}. {}'.format(fila + 1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
 							palb[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper()))
-							continue
+							break
 						if len(palb[fila]) < int(pos[1]):
 							print('{}. {}'.format(fila + 1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
 							palb[fila][(int(pos[0])+1):int(pos[1])]))
-							continue
+							break
 						print('{}. {}'.format(fila + 1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
 						palb[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper() + palb[fila][int(pos[1])+1:]))
 				else:
 					if fila < 9:
 						print('{}.  {}'.format(fila+1, '.'*len(palb[fila])))
+						break
 					if fila >= 9:
 						print('{}. {}'.format(fila + 1, '.'*len(palb[fila])))
-				continue
+						break
+				
 			print()
 		
 	return
