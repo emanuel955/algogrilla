@@ -10,13 +10,21 @@ def main():
 	args = parser.parse_args()
 	imprimir_solucion = args.solucion # es True si el usuario incluyó la opción -s
 	
-	frase_aleatoria = elegir_frase('frases.csv')
-	palabras_elegidas = elegir_palabras('palabras.csv', frase_aleatoria)
+	dicDeFrases = abrirArchivo('frases.csv')
+	dicDePalabras = abrirArchivo('palabras.csv')
+	frase_aleatoria = elegir_frase(dicDeFrases)
+	listFraseEnDos = partir_frase(frase_aleatoria)
+	palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1],listFraseEnDos)
 
-	numpos = frase_aleatoria[1].split(',')
+	while len(palabras_elegidas) < (len(listFraseEnDos[0])):
+		frase_aleatoria = elegir_frase(dicDeFrases)
+		listFraseEnDos = partir_frase(frase_aleatoria)
+		palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1], listFraseEnDos)
 
-	imprimirs(palabras_elegidas,numpos,imprimir_solucion)
 
+	imprimirs(palabras_elegidas,frase_aleatoria[1],imprimir_solucion, dicDePalabras)
+
+	numCorrectos = []
 	while True:
 		try:
 			numero = int(input('Ingrese un numero de palabra o 0 para terminar: '))
@@ -30,26 +38,37 @@ def main():
 			print('No es una palabra')
 			continue
 
-		numPos = frase_aleatoria[1].split(',')
+		for fila in range(len(palabras_elegidas)):
+			if (numero -1)==fila and palabra == palabras_elegidas[fila]:
+				numCorrectos.append(numero-1)
+				numCorrectos.sort()
+			if (numero -1)==fila and palabra != palabras_elegidas[fila]:
+				print('No es la palabra correcta')
+				continue
 
-		imprimir(numero, palabra, palabras_elegidas, numPos )
+		imprimir(numero, palabra, palabras_elegidas, frase_aleatoria[1], dicDePalabras,numCorrectos)
 
-def imprimirs(palb,numpos, imprimir_solucion):
+def imprimirs(palb,numpos, imprimir_solucion,dicDePalabras):
 	print('GENERADOR DE ALGOGRILLAS')
 	print()
-
+	
 	for fila in range(len(palb)):
 			if fila < 9:
 				print('{}.  {}'.format(fila+1, '.'*len(palb[fila])))
-			if fila >= 10:
+			if fila >= 9:
 				print('{}. {}'.format(fila + 1, '.'*len(palb[fila])))
 			print()
-			print(DEFINICIONES)
-
+	print()
+	print('DEFINICIONES')
+	for i in range(len(palb)):
+		valor = dicDePalabras.get(palb[i])
+		print('{}. {}'.format(i+1,valor[1]))
+			
 	print()
 	if imprimir_solucion:
 		print('SOLUCION')
 		print()
+		
 		for fila in range(len(palb)):
 			if fila < 9:
 				print('{}.  {}'.format(fila+1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
@@ -67,25 +86,44 @@ def imprimirs(palb,numpos, imprimir_solucion):
 		return None
 
 
-'''def imprimir(num, pal, palb, pos):
-	numCorrectos = []
+def imprimir(numero, palabra, palb, pos, dicDePalabras,numCorrectos):
+	
 	for fila in range(len(palb)):
-		for columnas in fila:
-			if (num -1)==fila and pal == palb[fila]:
-				numCorrectos.append(num)'''
+		if len(numCorrectos):
+			for i in numCorrectos:
+				if i == fila:
+					if fila < 9:
+						print('{}.  {}'.format(fila+1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
+						palb[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper() + palb[fila][int(pos[1])+1:]))
+					if fila >= 9:
+						if len(palb[fila]) == int(pos[1]):
+							print('{}. {}'.format(fila + 1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
+							palb[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper()))
+							continue
+						if len(palb[fila]) < int(pos[1]):
+							print('{}. {}'.format(fila + 1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
+							palb[fila][(int(pos[0])+1):int(pos[1])]))
+							continue
+						print('{}. {}'.format(fila + 1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
+						palb[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper() + palb[fila][int(pos[1])+1:]))
+				else:
+					if fila < 9:
+						print('{}.  {}'.format(fila+1, '.'*len(palb[fila])))
+					if fila >= 9:
+						print('{}. {}'.format(fila + 1, '.'*len(palb[fila])))
+				continue
+			print()
+		
+	return
 
-
-
-
-def elegir_palabras(arc_palabras, frase_aleatoria):
-	'''recibe un archivo csv con palabras|silabas|definicion y una lista que contiene una frase,columnas,autor
+def elegir_palabras(dicPalabras, frase_aleatoria,listFrase):
+	'''recibe un diccionario de palabras y una lista que contiene una frase,columnas,autor y la frase partida en dos
 	y devuelve una lista con palabras al azar'''
-	listFrase = partir_frase(frase_aleatoria)
-	palabras = abrirArchivo(arc_palabras)
+	
 
 	listaPalabra = []
-	listaDePalabras = list(palabras.keys())
-	numPos = frase_aleatoria[1].split(',') #lista que contiene las columnas
+	listaDePalabras = list(dicPalabras.keys())
+	numPos1, numPos2 = frase_aleatoria #lista que contiene las columnas
 	maximo = max(len(listFrase[0]),len(listFrase[1]))
 	for i in range(maximo):
 		for o in listaDePalabras:
@@ -93,13 +131,13 @@ def elegir_palabras(arc_palabras, frase_aleatoria):
 			if c in listaPalabra:
 				continue
 			if len(listFrase[0]) > len(listFrase[1]) and i == (maximo-1):
-				if int(numPos[0]) < len(c) < int(numPos[1]):
-					if len(c) < int(numPos[1]) and c[int(numPos[0])] == listFrase[0][i]:
+				if int(numPos1) < len(c) < int(numPos2):
+					if len(c) < int(numPos2) and c[int(numPos1)] == listFrase[0][i]:
 						listaPalabra.append(c)
 						break
 				continue
-			if len(c) > int(numPos[1]):
-				if c[int(numPos[0])] == listFrase[0][i] and c[int(numPos[1])] == listFrase[1][i]:
+			if len(c) > int(numPos2):
+				if c[int(numPos1)] == listFrase[0][i] and c[int(numPos2)] == listFrase[1][i]:
 					listaPalabra.append(c)
 					break
 	print(listaPalabra)
@@ -112,27 +150,23 @@ def partir_frase(frase):
 		if not i.isalpha():
 			continue
 		fraseJunta += i
-	print(fraseJunta, len(fraseJunta))
+
 	if len(fraseJunta)%2 !=0:
 		return [fraseJunta[:(len(fraseJunta)//2)+1],fraseJunta[(len(fraseJunta)//2)+1:]]
-
-	print([fraseJunta[:(len(fraseJunta)//2)],fraseJunta[(len(fraseJunta)//2):]])
 	return [fraseJunta[:(len(fraseJunta)//2)],fraseJunta[(len(fraseJunta)//2):]]
 
 	
-def elegir_frase(arc_frases):
-	'''recibe un archivo csv con el formato frases|columas|autor, elige una frase al azar y devuelve una lista
-	con el formato que le llega'''
-	frases = abrirArchivo(arc_frases)
+def elegir_frase(frases):
+	'''recibe un diccionario con frases, elige una frase al azar y devuelve una lista
+	con la frase elejida, las columnas donde va a ir ubicada y el autor'''
 
-	listaClaves = list(frases.keys()) #toma las claves del dicc y las guarda en una lista
-	claveAlea = random.choice(listaClaves)
-	valorClaveAlea = frases.get(claveAlea)
-	print([claveAlea.strip('"').lower(), valorClaveAlea[0], valorClaveAlea[1]])
-	return [claveAlea.strip('"').lower(), valorClaveAlea[0], valorClaveAlea[1]]
+	listaDeClaves = list(frases.keys()) #toma las claves del dic y las guarda en una lista
+	claveAleatoria = random.choice(listaDeClaves)
+	valorClaveAlea = frases.get(claveAleatoria)
+	return [claveAleatoria.strip('"').lower(), valorClaveAlea[0].split(','), valorClaveAlea[1]]
 
 def abrirArchivo(archivo):
-	'''recibe un archivo y devuelve el contenido en un diccionario'''
+	'''recibe un archivo csv con el formato columna1|columa2|columna3 y devuelve el contenido en un diccionario'''
 	diccionario = {}
 	with open(archivo,encoding= "utf8") as arch:
 		for linea in arch:
