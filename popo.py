@@ -1,4 +1,9 @@
-
+'''
+Emanuel Alberto Zetka
+102.134
+barbara
+Joel Saidman
+'''
 import random
 import argparse
 
@@ -13,18 +18,19 @@ def main():
 	dicDeFrases = abrirArchivo('frases.csv')
 	dicDePalabras = abrirArchivo('palabras.csv')
 	frase_aleatoria = elegir_frase(dicDeFrases)
-	FrasePartida = partir_frase(frase_aleatoria)
-	palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1],FrasePartida)
+	listFraseEnDos = partir_frase(frase_aleatoria)
+	palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1],listFraseEnDos)
 
-	while len(palabras_elegidas) < (len(FrasePartida[0])):
+	while len(palabras_elegidas) < (len(listFraseEnDos[0])):
 		frase_aleatoria = elegir_frase(dicDeFrases)
-		FrasePartida = partir_frase(frase_aleatoria)
-		palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1], FrasePartida)
+		listFraseEnDos = partir_frase(frase_aleatoria)
+		palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1], listFraseEnDos)
 
 	imprimir(0,'',palabras_elegidas,frase_aleatoria[1], dicDePalabras,[])
 	solucion = imprimirSolucion(imprimir_solucion,palabras_elegidas,frase_aleatoria[1])
 	if solucion:
 		return
+	
 
 	numCorrectos = []
 	while True:
@@ -37,25 +43,20 @@ def main():
 			return 'Fin del Juego'
 		palabra = input('ingrese la palabra: ')
 		if not palabra.isalpha():
-			print('NO ES UNA PALABRA')
+			print('No es una palabra')
 			continue
 
 		for fila in range(len(palabras_elegidas)):
-			if (numero - 1) in numCorrectos:
-				print('YA INGRESO ESA PALABRA')
-				break
 			if (numero -1)==fila and palabra == palabras_elegidas[fila]:
 				numCorrectos.append(numero-1)
 				numCorrectos.sort()
 			if (numero -1)==fila and palabra != palabras_elegidas[fila]:
-				print('NO ES LA PALABRA CORRECTA')
+				print('No es la palabra correcta')
 				continue
 
 		imprimir(numero, palabra, palabras_elegidas, frase_aleatoria[1], dicDePalabras,numCorrectos)
 
-
-def imprimirSolucion(imprimir_solucion,palb,numpos):
-			
+def imprimirSolucion(imprimir_solucion,palb,numpos):			
 	print()
 	if imprimir_solucion:
 		print('SOLUCION')
@@ -72,14 +73,13 @@ def imprimirSolucion(imprimir_solucion,palb,numpos):
 				if len(palb[fila]) < int(numpos[1]):
 					print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
 					palb[fila][(int(numpos[0])+1):int(numpos[1])]))
-
-				print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
+				else:
+					print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
 					palb[fila][(int(numpos[0])+1):int(numpos[1])] + palb[fila][int(numpos[1])].upper() + palb[fila][int(numpos[1])+1:]))
-		return None
+	return True
 
 def imprimir(numero, palabra, palb, pos, dicDePalabras,numCorrectos):
 	'''imprime la grilla a medida que se va completando'''
-	print()
 	print('GENERADOR DE ALGOGRILLAS')
 	print()
 	
@@ -121,51 +121,45 @@ def imprimir(numero, palabra, palb, pos, dicDePalabras,numCorrectos):
 		if c in numCorrectos:
 			continue
 		valor = dicDePalabras.get(palb[c])
-		print('{}. {}'.format(c+1,valor[1]))
-	print()
+		print('{}. {}'.format(c+1,valor[1]))				
 
-def elegir_palabras(dicPalabras, posiciones,FrasePartida):
-	'''recibe un diccionario de palabras y una lista que contiene la posiciones donde va a ir la frase
-	y la frase partida en dos, devuelve una lista con palabras al azar'''
+def elegir_palabras(dicPalabras, frase_aleatoria,listFrase):
+	'''recibe un diccionario de palabras y una lista que contiene una frase,columnas,autor y la frase partida en dos
+	y devuelve una lista con palabras al azar'''
 	
 
-	listaDePalabra = []
-	Palabras = list(dicPalabras.keys())
-	numPos1, numPos2 = posiciones #lista que contiene las columnas
-	maximo = max(len(FrasePartida[0]),len(FrasePartida[1]))
+	listaPalabra = []
+	listaDePalabras = list(dicPalabras.keys())
+	numPos1, numPos2 = frase_aleatoria #lista que contiene las columnas
+	maximo = max(len(listFrase[0]),len(listFrase[1]))
 	for i in range(maximo):
-		for o in Palabras:
-			c = random.choice(Palabras)
-			if c in listaDePalabra:
+		for o in listaDePalabras:
+			c = random.choice(listaDePalabras)
+			if c in listaPalabra:
 				continue
-			if len(FrasePartida[0]) > len(FrasePartida[1]) and i == (maximo-1):
+			if len(listFrase[0]) > len(listFrase[1]) and i == (maximo-1):
 				if int(numPos1) < len(c) < int(numPos2):
-					if len(c) < int(numPos2) and c[int(numPos1)] == FrasePartida[0][i]:
-						listaDePalabra.append(c.lower())
+					if len(c) < int(numPos2) and c[int(numPos1)] == listFrase[0][i]:
+						listaPalabra.append(c)
 						break
 				continue
 			if len(c) > int(numPos2):
-				if c[int(numPos1)] == FrasePartida[0][i] and c[int(numPos2)] == FrasePartida[1][i]:
-					listaDePalabra.append(c.lower())
+				if c[int(numPos1)] == listFrase[0][i] and c[int(numPos2)] == listFrase[1][i]:
+					listaPalabra.append(c)
 					break
-	print(listaDePalabra)
-	return listaDePalabra
-
+	print(listaPalabra)
+	return listaPalabra
 def partir_frase(frase):
 	'''recibe una lista que contiene la frase en la posicion cero, devuelve una lista con la frase partida en dos
 	si la longitud de la cadena es impar la primera parte sera mas grande que la segunda'''
 	fraseJunta = ''
 	for i in frase[0]:
 		if not i.isalpha():
-			if i == '(':
-				break
 			continue
 		fraseJunta += i
 
 	if len(fraseJunta)%2 !=0:
-		print([fraseJunta[:(len(fraseJunta)//2)+1],fraseJunta[(len(fraseJunta)//2)+1:]])
 		return [fraseJunta[:(len(fraseJunta)//2)+1],fraseJunta[(len(fraseJunta)//2)+1:]]
-	print([fraseJunta[:(len(fraseJunta)//2)],fraseJunta[(len(fraseJunta)//2):]])
 	return [fraseJunta[:(len(fraseJunta)//2)],fraseJunta[(len(fraseJunta)//2):]]
 
 	
@@ -175,7 +169,6 @@ def elegir_frase(frases):
 
 	listaDeClaves = list(frases.keys()) #toma las claves del dic y las guarda en una lista
 	claveAleatoria = random.choice(listaDeClaves)
-	print(claveAleatoria.strip('"').lower())
 	valorClaveAlea = frases.get(claveAleatoria)
 	return [claveAleatoria.strip('"').lower(), valorClaveAlea[0].split(','), valorClaveAlea[1]]
 
