@@ -16,7 +16,7 @@ def main():
 	FrasePartida = partir_frase(frase_aleatoria)
 	palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1],FrasePartida)
 
-	while len(palabras_elegidas) < (len(FrasePartida[0])):
+	while len(palabras_elegidas) < len(FrasePartida[0]):
 		frase_aleatoria = elegir_frase(dicDeFrases)
 		FrasePartida = partir_frase(frase_aleatoria)
 		palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1], FrasePartida)
@@ -28,9 +28,8 @@ def main():
 
 	numCorrectos = []
 	while True:
-		try:
-			numero = int(input('Ingrese un numero de palabra o 0 para terminar: '))
-		except ValueError:
+		numero = int(input('Ingrese un numero de palabra o 0 para terminar: '))
+		if not numero.isdigit():
 			print('No es un numero')
 			continue
 		if numero == 0:
@@ -55,7 +54,7 @@ def main():
 
 
 def imprimirSolucion(imprimir_solucion,palb,numpos):
-			
+	'''imprime la grilla vacia y a continuacion la grilla resuelta'''	
 	print()
 	if imprimir_solucion:
 		print('SOLUCION')
@@ -76,59 +75,66 @@ def imprimirSolucion(imprimir_solucion,palb,numpos):
 				print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
 					palb[fila][(int(numpos[0])+1):int(numpos[1])] + palb[fila][int(numpos[1])].upper() + palb[fila][int(numpos[1])+1:]))
 		return None
-
-def imprimir(numero, palabra, palb, pos, dicDePalabras,numCorrectos):
-	'''imprime la grilla a medida que se va completando'''
+#---------------------------------------------------------------------------------------------------------------
+def imprimir(numero, palabra, listaPalabras, pos, dicDePalabras,numCorrectos):
+	'''pre: recibe el numero de la fila y la palabra, las posiciones donde estaran las letras en mayusculas,
+	una lista con las palabras que forman la frase, una lista que contiene los numeros de las filas resueltas 
+	y un diccionario que contiene las silabas de las palabras 
+	post: imprime la grilla a medida que se va completando'''
 	print()
 	print('GENERADOR DE ALGOGRILLAS')
 	print()
 	
-	for fila in range(len(palb)):
+	for fila in range(len(listaPalabras)):
 		if len(numCorrectos):
 			for i in range(len(numCorrectos)):
 				if fila not in numCorrectos:
 					if fila < 9:
-						print('{}.  {}'.format(fila+1, '.'*len(palb[fila])))
+						print('{}.  {}'.format(fila+1, '.'*len(listaPalabras[fila])))
 						break
 					if fila >= 9:
-						print('{}. {}'.format(fila + 1, '.'*len(palb[fila])))
+						print('{}. {}'.format(fila + 1, '.'*len(listaPalabras[fila])))
 						break
 				if fila == numCorrectos[i]:
 					if fila < 9:
-						print('{}.  {}'.format(fila+1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
-						palb[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper() + palb[fila][int(pos[1])+1:]))
+						print('{}.  {}'.format(fila+1, listaPalabras[fila][:int(pos[0])]+ listaPalabras[fila][int(pos[0])].upper() + 
+						listaPalabras[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper() + listaPalabras[fila][int(pos[1])+1:]))
 						break
 					if fila >= 9:
-						if len(palb[fila]) == int(pos[1]):
-							print('{}. {}'.format(fila + 1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
-							palb[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper()))
+						if len(listaPalabras[fila]) == int(pos[1]):
+							print('{}. {}'.format(fila + 1, listaPalabras[fila][:int(pos[0])]+ listaPalabras[fila][int(pos[0])].upper() + 
+							listaPalabras[fila][(int(pos[0])+1):int(pos[1])] + listaPalabras[fila][int(pos[1])].upper()))
 							break
-						if len(palb[fila]) < int(pos[1]):
-							print('{}. {}'.format(fila + 1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
-							palb[fila][(int(pos[0])+1):int(pos[1])]))
+						if len(listaPalabras[fila]) < int(pos[1]):
+							print('{}. {}'.format(fila + 1, listaPalabras[fila][:int(pos[0])]+ listaPalabras[fila][int(pos[0])].upper() + 
+							listaPalabras[fila][(int(pos[0])+1):int(pos[1])]))
 							break
-						print('{}. {}'.format(fila + 1, palb[fila][:int(pos[0])]+ palb[fila][int(pos[0])].upper() + 
-						palb[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper() + palb[fila][int(pos[1])+1:]))
+						print('{}. {}'.format(fila + 1, listaPalabras[fila][:int(pos[0])]+ listaPalabras[fila][int(pos[0])].upper() + 
+						listaPalabras[fila][(int(pos[0])+1):int(pos[1])] + listaPalabras[fila][int(pos[1])].upper() + listaPalabras[fila][int(pos[1])+1:]))
 				
 		else:
 			if fila < 9:
-				print('{}.  {}'.format(fila+1, '.'*len(palb[fila])))
+				print('{}.  {}'.format(fila+1, '.'*len(listaPalabras[fila])))
 			if fila >= 9:
-				print('{}. {}'.format(fila + 1, '.'*len(palb[fila])))
+				print('{}. {}'.format(fila + 1, '.'*len(listaPalabras[fila])))
 	print()
 	print('DEFINICIONES')
-	for c in range(len(palb)):
+	silabas = []
+	for c in range(len(listaPalabras)):
 		if c in numCorrectos:
 			continue
-		valor = dicDePalabras.get(palb[c])
+		valor = dicDePalabras.get(listaPalabras[c])
+		silabas.append(','.join(valor[0].split('-')))
 		print('{}. {}'.format(c+1,valor[1]))
 	print()
-
+	silabas.sort()
+	print(','.join(silabas))
+	print()
+#----------------------------------------------------------------------------------------
 def elegir_palabras(dicPalabras, posiciones,FrasePartida):
-	'''recibe un diccionario de palabras y una lista que contiene la posiciones donde va a ir la frase
-	y la frase partida en dos, devuelve una lista con palabras al azar'''
-	
-
+	'''pre: Recibe un diccionario de palabras que contiene una lista como valor, una lista que contiene la posiciones 
+	donde va a ir la frase y la frase partida en dos
+	post: devuelve una lista con palabras al azar'''
 	listaDePalabra = []
 	Palabras = list(dicPalabras.keys())
 	numPos1, numPos2 = posiciones #lista que contiene las columnas
@@ -150,9 +156,9 @@ def elegir_palabras(dicPalabras, posiciones,FrasePartida):
 					break
 	print(listaDePalabra)
 	return listaDePalabra
-
+#--------------------------------------------------------------------------------------------------
 def partir_frase(frase):
-	'''recibe una lista que contiene la frase en la posicion cero, devuelve una lista con la frase partida en dos
+	'''Recibe una lista que contiene la frase en la posicion cero, devuelve una lista con la frase partida en dos
 	si la longitud de la cadena es impar la primera parte sera mas grande que la segunda'''
 	fraseJunta = ''
 	for i in frase[0]:
@@ -168,7 +174,7 @@ def partir_frase(frase):
 	print([fraseJunta[:(len(fraseJunta)//2)],fraseJunta[(len(fraseJunta)//2):]])
 	return [fraseJunta[:(len(fraseJunta)//2)],fraseJunta[(len(fraseJunta)//2):]]
 
-	
+#------------------------------------------------------------------------------------------	
 def elegir_frase(frases):
 	'''recibe un diccionario con frases, elige una frase al azar y devuelve una lista
 	con la frase elejida, las columnas donde va a ir ubicada y el autor'''
@@ -178,9 +184,10 @@ def elegir_frase(frases):
 	print(claveAleatoria.strip('"').lower())
 	valorClaveAlea = frases.get(claveAleatoria)
 	return [claveAleatoria.strip('"').lower(), valorClaveAlea[0].split(','), valorClaveAlea[1]]
-
+#------------------------------------------------------------------------------------------------------
 def abrirArchivo(archivo):
-	'''recibe un archivo csv con el formato columna1|columa2|columna3 y devuelve el contenido en un diccionario'''
+	'''pre: recibe un archivo csv con el formato columna1|columa2|columna3
+	post: devuelve el contenido en un diccionario'''
 	diccionario = {}
 	with open(archivo,encoding= "utf8") as arch:
 		for linea in arch:
