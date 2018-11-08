@@ -29,8 +29,8 @@ def main():
 
 	numCorrectos = []
 	while True:
-		numero = int(input('Ingrese un numero de palabra o 0 para terminar: '))
-		if numero == 0:
+		numero = input('Ingrese un numero de palabra o 0 para terminar: ')
+		if int(numero) == 0:
 			return 'Fin del Juego'
 		if not numero.isdigit():
 			print('No es un numero')
@@ -41,13 +41,13 @@ def main():
 			continue
 
 		for fila in range(len(palabras_elegidas)):
-			if (numero - 1) in numCorrectos:
+			if (int(numero) - 1) in numCorrectos:
 				print('YA INGRESO ESA PALABRA')
 				break
-			if (numero -1)==fila and palabra == palabras_elegidas[fila]:
-				numCorrectos.append(numero-1)
+			if (int(numero) -1)==fila and palabra == palabras_elegidas[fila]:
+				numCorrectos.append(int(numero)-1)
 				numCorrectos.sort()
-			if (numero -1)==fila and palabra != palabras_elegidas[fila]:
+			if (int(numero) -1)==fila and palabra != palabras_elegidas[fila]:
 				print('NO ES LA PALABRA CORRECTA')
 				continue
 
@@ -99,7 +99,7 @@ def imprimir(numero, palabra, listaPalabras, pos, dicDePalabras,numCorrectos):
 				if fila == numCorrectos[i]:
 					if fila < 9:
 						print('{}.  {}'.format(fila+1, listaPalabras[fila][:int(pos[0])]+ listaPalabras[fila][int(pos[0])].upper() + 
-						listaPalabras[fila][(int(pos[0])+1):int(pos[1])] + palb[fila][int(pos[1])].upper() + listaPalabras[fila][int(pos[1])+1:]))
+						listaPalabras[fila][(int(pos[0])+1):int(pos[1])] + listaPalabras[fila][int(pos[1])].upper() + listaPalabras[fila][int(pos[1])+1:]))
 						break
 					if fila >= 9:
 						if len(listaPalabras[fila]) == int(pos[1]):
@@ -186,6 +186,15 @@ def elegir_frase(frases):
 	valorClaveAlea = frases.get(claveAleatoria)
 	return [claveAleatoria.strip('"').lower(), valorClaveAlea[0].split(','), valorClaveAlea[1]]
 #------------------------------------------------------------------------------------------------------
+def quitarAcentos(algo):
+	dic = {á:a, é:e, í:i, ó:o, ú:u}
+	if len(algo) ==1 :
+
+	for i in range(len(algo)):
+		if algo[i] in dic:
+			return dic[algo[i]]
+		return algo
+#--------------------------------------------------------------------------------------------------------
 def abrirArchivo(archivo):
 	'''pre: recibe un archivo csv con el formato columna1|columa2|columna3
 	post: devuelve el contenido en un diccionario'''
