@@ -22,18 +22,19 @@ def main():
 		palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1], FrasePartida)
 
 	imprimir(0,'',palabras_elegidas,frase_aleatoria[1], dicDePalabras,[])
-	solucion = imprimirSolucion(imprimir_solucion,palabras_elegidas,frase_aleatoria[1])
-	if solucion:
-		return
+	#solucion = 
+	imprimirSolucion(imprimir_solucion,palabras_elegidas,frase_aleatoria[1])
+	#if not solucion:
+	#	return
 
 	numCorrectos = []
 	while True:
 		numero = int(input('Ingrese un numero de palabra o 0 para terminar: '))
+		if numero == 0:
+			return 'Fin del Juego'
 		if not numero.isdigit():
 			print('No es un numero')
 			continue
-		if numero == 0:
-			return 'Fin del Juego'
 		palabra = input('ingrese la palabra: ')
 		if not palabra.isalpha():
 			print('NO ES UNA PALABRA')
@@ -52,7 +53,7 @@ def main():
 
 		imprimir(numero, palabra, palabras_elegidas, frase_aleatoria[1], dicDePalabras,numCorrectos)
 
-
+#---------------------------------------------------------------------------------------------
 def imprimirSolucion(imprimir_solucion,palb,numpos):
 	'''imprime la grilla vacia y a continuacion la grilla resuelta'''	
 	print()
