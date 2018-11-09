@@ -125,11 +125,11 @@ def imprimir(numero, palabra, listaPalabras, pos, dicDePalabras,numCorrectos):
 		if c in numCorrectos:
 			continue
 		valor = dicDePalabras.get(listaPalabras[c])
-		silabas.append(','.join(valor[0].split('-')))
+		#silabas.append(','.join(valor[0].split('-')))
 		print('{}. {}'.format(c+1,valor[1]))
 	print()
 	silabas.sort()
-	print(','.join(silabas))
+	#print(','.join(silabas))
 	print()
 #----------------------------------------------------------------------------------------
 def elegir_palabras(dicPalabras, posiciones,FrasePartida):
@@ -186,14 +186,17 @@ def elegir_frase(frases):
 	valorClaveAlea = frases.get(claveAleatoria)
 	return [claveAleatoria.strip('"').lower(), valorClaveAlea[0].split(','), valorClaveAlea[1]]
 #------------------------------------------------------------------------------------------------------
-def quitarAcentos(algo):
-	dic = {á:a, é:e, í:i, ó:o, ú:u}
-	if len(algo) ==1 :
-
-	for i in range(len(algo)):
-		if algo[i] in dic:
-			return dic[algo[i]]
-		return algo
+def quitarAcentos(cadena):
+	'''pre: recibe una palabra o una oracion y la recorre en busca de letras con acentos
+	post: devuelve una nueva cadena sin acento'''
+	dic = {'á':'a', 'é':'e', 'í':'i', 'ó':'o', 'ú':'u'}
+	palabraSinAcento = ''
+	for i in range(len(cadena)):
+		if cadena[i] in dic:
+			palabraSinAcento += dic[cadena[i]]
+			continue
+		palabraSinAcento += cadena[i]
+	return palabraSinAcento
 #--------------------------------------------------------------------------------------------------------
 def abrirArchivo(archivo):
 	'''pre: recibe un archivo csv con el formato columna1|columa2|columna3
@@ -206,7 +209,7 @@ def abrirArchivo(archivo):
 			except:
 				continue
 			if not clave in diccionario:
-				diccionario[clave] = [valor1,valor2]
+				diccionario[quitarAcentos(clave)] = [quitarAcentos(valor1),quitarAcentos(valor2)]
 	return diccionario
 
 
