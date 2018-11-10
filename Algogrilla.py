@@ -22,15 +22,17 @@ def main():
 		palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1], FrasePartida)
 
 	imprimir(0,'',palabras_elegidas,frase_aleatoria[1], dicDePalabras,[])
-	#solucion = 
-	imprimirSolucion(imprimir_solucion,palabras_elegidas,frase_aleatoria[1])
-	#if not solucion:
-	#	return
-
+	inicioJuego(palabras_elegidas,frase_aleatoria[1],dicDePalabras)
+	
+#-----------------------------------------------------------------------------
+def inicioJuego(palabras_elegidas, frase_aleatoria,dicDePalabras):
+	'''interactua con el usuario
+	pre: recibe una lista de palabras, frase, diccionario de palabras
+	post imprime a medida que el usuario introduzca lo que le pida'''
 	numCorrectos = []
 	while True:
 		numero = input('Ingrese un numero de palabra o 0 para terminar: ')
-		if int(numero) == 0:
+		if numero == '0':
 			return 'Fin del Juego'
 		if not numero.isdigit():
 			print('No es un numero')
@@ -40,42 +42,30 @@ def main():
 			print('NO ES UNA PALABRA')
 			continue
 
+		if comprobar(numero,palabra,palabras_elegidas,numCorrectos):
+			numCorrectos.append(int(numero)-1)
+			numCorrectos.sort()
+
+		imprimir(numero, palabra, palabras_elegidas, frase_aleatoria, dicDePalabras,numCorrectos)
+#-------------------------------------------------------------------------------
+def comprobar(numero, palabra, palabras_elegidas,numCorrectos):
+	'''compara si el numero de fila y la pabrabra que ingresa el usuario es igual
+	a la que esta en la lista de palabras_elegidas'''
 		for fila in range(len(palabras_elegidas)):
+			palbSinAcent = quitarAcentos(palabras_elegidas[fila])
 			if (int(numero) - 1) in numCorrectos:
 				print('YA INGRESO ESA PALABRA')
-				break
-			if (int(numero) -1)==fila and palabra == palabras_elegidas[fila]:
-				numCorrectos.append(int(numero)-1)
-				numCorrectos.sort()
-			if (int(numero) -1)==fila and palabra != palabras_elegidas[fila]:
+				return False
+			if (int(numero) -1)==fila and palabra == palbSinAcent:
+				return True
+			if (int(numero) -1)==fila and palabra != palbSinAcent:
 				print('NO ES LA PALABRA CORRECTA')
-				continue
-
-		imprimir(numero, palabra, palabras_elegidas, frase_aleatoria[1], dicDePalabras,numCorrectos)
-
+			
+			
 #---------------------------------------------------------------------------------------------
 def imprimirSolucion(imprimir_solucion,palb,numpos):
 	'''imprime la grilla vacia y a continuacion la grilla resuelta'''	
-	print()
-	if imprimir_solucion:
-		print('SOLUCION')
-		print()
-		
-		for fila in range(len(palb)):
-			if fila < 9:
-				print('{}.  {}'.format(fila+1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
-					palb[fila][(int(numpos[0])+1):int(numpos[1])] + palb[fila][int(numpos[1])].upper() + palb[fila][int(numpos[1])+1:]))
-			if fila >= 9:
-				if len(palb[fila]) == int(numpos[1]):
-					print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
-					palb[fila][(int(numpos[0])+1):int(numpos[1])] + palb[fila][int(numpos[1])].upper()))
-				if len(palb[fila]) < int(numpos[1]):
-					print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
-					palb[fila][(int(numpos[0])+1):int(numpos[1])]))
-
-				print('{}. {}'.format(fila + 1, palb[fila][:int(numpos[0])]+ palb[fila][int(numpos[0])].upper() + 
-					palb[fila][(int(numpos[0])+1):int(numpos[1])] + palb[fila][int(numpos[1])].upper() + palb[fila][int(numpos[1])+1:]))
-		return None
+	pass
 #---------------------------------------------------------------------------------------------------------------
 def imprimir(numero, palabra, listaPalabras, pos, dicDePalabras,numCorrectos):
 	'''pre: recibe el numero de la fila y la palabra, las posiciones donde estaran las letras en mayusculas,
@@ -128,9 +118,6 @@ def imprimir(numero, palabra, listaPalabras, pos, dicDePalabras,numCorrectos):
 		#silabas.append(','.join(valor[0].split('-')))
 		print('{}. {}'.format(c+1,valor[1]))
 	print()
-	silabas.sort()
-	#print(','.join(silabas))
-	print()
 #----------------------------------------------------------------------------------------
 def elegir_palabras(dicPalabras, posiciones,FrasePartida):
 	'''pre: Recibe un diccionario de palabras que contiene una lista como valor, una lista que contiene la posiciones 
@@ -182,9 +169,10 @@ def elegir_frase(frases):
 
 	listaDeClaves = list(frases.keys()) #toma las claves del dic y las guarda en una lista
 	claveAleatoria = random.choice(listaDeClaves)
-	print(claveAleatoria.strip('"').lower())
 	valorClaveAlea = frases.get(claveAleatoria)
-	return [claveAleatoria.strip('"').lower(), valorClaveAlea[0].split(','), valorClaveAlea[1]]
+	frase = quitarAcentos(claveAleatoria.lower())
+	print(frase)
+	return [frase, valorClaveAlea[0].split(','), valorClaveAlea[1]]
 #------------------------------------------------------------------------------------------------------
 def quitarAcentos(cadena):
 	'''pre: recibe una palabra o una oracion y la recorre en busca de letras con acentos
@@ -209,7 +197,7 @@ def abrirArchivo(archivo):
 			except:
 				continue
 			if not clave in diccionario:
-				diccionario[quitarAcentos(clave)] = [quitarAcentos(valor1),quitarAcentos(valor2)]
+				diccionario[clave] = [valor1,valor2]
 	return diccionario
 
 
