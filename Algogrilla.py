@@ -21,11 +21,14 @@ def main():
 		FrasePartida = partir_frase(frase_aleatoria)
 		palabras_elegidas = elegir_palabras(dicDePalabras, frase_aleatoria[1], FrasePartida)
 
-	imprimir(0,'',palabras_elegidas,frase_aleatoria, dicDePalabras,[])
-	inicioJuego(palabras_elegidas,frase_aleatoria,dicDePalabras)
+	imprimir(0,'',palabras_elegidas,frase_aleatoria, dicDePalabras,[],imprimir_solucion)
+	if imprimir_solucion:
+		return
+	inicioJuego(palabras_elegidas,frase_aleatoria,dicDePalabras,imprimir_solucion)
+
 	
 #-----------------------------------------------------------------------------
-def inicioJuego(palabras_elegidas, frase_aleatoria,dicDePalabras):
+def inicioJuego(palabras_elegidas, frase_aleatoria,dicDePalabras,imprimir_solucion):
 	'''interactua con el usuario
 	pre: recibe una lista de palabras, frase, diccionario de palabras
 	post imprime a medida que el usuario introduzca lo que le pida'''
@@ -46,7 +49,7 @@ def inicioJuego(palabras_elegidas, frase_aleatoria,dicDePalabras):
 			numCorrectos.append(int(numero)-1)
 			numCorrectos.sort()
 
-		imprimir(numero, palabra, palabras_elegidas, frase_aleatoria, dicDePalabras,numCorrectos)
+		imprimir(numero, palabra, palabras_elegidas, frase_aleatoria, dicDePalabras,numCorrectos,imprimir_solucion)
 #-------------------------------------------------------------------------------
 def comprobar(numero, palabra, palabras_elegidas,numCorrectos):
 	'''compara si el numero de fila y la pabrabra que ingresa el usuario es igual
@@ -67,7 +70,7 @@ def imprimirSolucion(imprimir_solucion,palb,numpos):
 	'''imprime la grilla vacia y a continuacion la grilla resuelta'''	
 	pass
 #---------------------------------------------------------------------------------------------------------------
-def imprimir(numero, palabra, listaPalabras, frase_aleatoria, dicDePalabras,numCorrectos):
+def imprimir(numero, palabra, listaPalabras, frase_aleatoria, dicDePalabras,numCorrectos,imprimir_solucion):
 	'''pre: recibe el numero de la fila y la palabra, las posiciones donde estaran las letras en mayusculas,
 	una lista con las palabras que forman la frase, una lista que contiene los numeros de las filas resueltas 
 	y un diccionario que contiene las silabas de las palabras 
@@ -78,7 +81,7 @@ def imprimir(numero, palabra, listaPalabras, frase_aleatoria, dicDePalabras,numC
 	
 	for fila in range(len(listaPalabras)):
 		espacio =(' ' if fila >= 9 else '  ')
-		if fila in numCorrectos:
+		if fila in numCorrectos or imprimir_solucion:
 			M = ''
 			for c in range(len(listaPalabras[fila])):
 				var = (listaPalabras[fila][c].upper()if str(c) in frase_aleatoria[1] else listaPalabras[fila][c])
@@ -101,6 +104,7 @@ def imprimir(numero, palabra, listaPalabras, frase_aleatoria, dicDePalabras,numC
 	print(','.join(silabas))
 	print('Al finalizar leerá una frase de ' + frase_aleatoria[2])
 	print()
+
 #----------------------------------------------------------------------------------------
 def elegir_palabras(dicPalabras, posiciones,FrasePartida):
 	'''pre: Recibe un diccionario de palabras que contiene una lista como valor, una lista que contiene la posiciones 
