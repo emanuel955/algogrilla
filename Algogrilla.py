@@ -63,12 +63,6 @@ def comprobar(numero, palabra, palabras_elegidas,numCorrectos):
 			return True
 		if (int(numero) -1)==fila and palabra != palbSinAcent:
 			print('NO ES LA PALABRA CORRECTA')
-			
-			
-#---------------------------------------------------------------------------------------------
-def imprimirSolucion(imprimir_solucion,palb,numpos):
-	'''imprime la grilla vacia y a continuacion la grilla resuelta'''	
-	pass
 #---------------------------------------------------------------------------------------------------------------
 def imprimir(numero, palabra, listaPalabras, frase_aleatoria, dicDePalabras,numCorrectos,imprimir_solucion):
 	'''pre: recibe el numero de la fila y la palabra, las posiciones donde estaran las letras en mayusculas,
