@@ -1,14 +1,28 @@
-
+'''
+Alumno: Emanuel Alberto Zetka
+Padron: 102134
+Corrector: Joel Saidman
+Curso: Barbara
+'''
 import random
 import argparse
+import datetime
 
 def main():
 
 	parser = argparse.ArgumentParser(description='Algogrillas')
 	parser.add_argument('-s', '--solucion', action='store_true', help='imprimir la solución')
-	#parser.add_argument('-n', '--numero', help='número de algogrilla')
+	parser.add_argument('-n', '--numero', help='número de algogrilla')
 	args = parser.parse_args()
 	imprimir_solucion = args.solucion # es True si el usuario incluyó la opción -s
+
+	if args.numero and args.numero.isdigit():
+		numero_de_algogrilla = int(args.numero)
+	else:
+		numero_de_algogrilla = int(datetime.datetime.now().timestamp())
+	random.seed(numero_de_algogrilla)
+	print(numero_de_algogrilla)
+
 	
 	dicDeFrases = abrirArchivo('frases.csv')
 	dicDePalabras = abrirArchivo('palabras.csv')
@@ -59,7 +73,7 @@ def comprobar(numero, palabra, palabras_elegidas,numCorrectos):
 		if (int(numero) - 1) in numCorrectos:
 			print('YA INGRESO ESA PALABRA')
 			return False
-		if (int(numero) -1)==fila and palabra == palbSinAcent:
+		if (int(numero) -1)==fila and (palabra == palbSinAcent or palabra == palabras_elegidas[fila]):
 			return True
 		if (int(numero) -1)==fila and palabra != palbSinAcent:
 			print('NO ES LA PALABRA CORRECTA')
@@ -123,7 +137,6 @@ def elegir_palabras(dicPalabras, posiciones,FrasePartida):
 				if c[int(numPos1)] == FrasePartida[0][i] and c[int(numPos2)] == FrasePartida[1][i]:
 					listaDePalabra.append(c.lower())
 					break
-	print(listaDePalabra)
 	return listaDePalabra
 #--------------------------------------------------------------------------------------------------
 def partir_frase(frase):
@@ -138,9 +151,7 @@ def partir_frase(frase):
 		fraseJunta += i
 
 	if len(fraseJunta)%2 !=0:
-		print([fraseJunta[:(len(fraseJunta)//2)+1],fraseJunta[(len(fraseJunta)//2)+1:]])
 		return [fraseJunta[:(len(fraseJunta)//2)+1],fraseJunta[(len(fraseJunta)//2)+1:]]
-	print([fraseJunta[:(len(fraseJunta)//2)],fraseJunta[(len(fraseJunta)//2):]])
 	return [fraseJunta[:(len(fraseJunta)//2)],fraseJunta[(len(fraseJunta)//2):]]
 
 #------------------------------------------------------------------------------------------	
@@ -152,8 +163,6 @@ def elegir_frase(frases):
 	claveAleatoria = random.choice(listaDeClaves)
 	valorClaveAlea = frases.get(claveAleatoria)
 	frase = quitarAcentos(claveAleatoria.lower())
-	print(frase)
-	print(valorClaveAlea[1])
 	return [frase, valorClaveAlea[0].split(','), valorClaveAlea[1]]
 #------------------------------------------------------------------------------------------------------
 def quitarAcentos(cadena):
@@ -170,7 +179,8 @@ def quitarAcentos(cadena):
 #--------------------------------------------------------------------------------------------------------
 def abrirArchivo(archivo):
 	'''pre: recibe un archivo csv con el formato columna1|columa2|columna3
-	post: devuelve el contenido en un diccionario'''
+	post: devuelve el contenido en un diccionario donde su valor es una lista con las
+	columnas 2 y 3'''
 	diccionario = {}
 	with open(archivo,encoding= "utf8") as arch:
 		for linea in arch:
