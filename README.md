@@ -5,7 +5,8 @@ sobre las palabras de la grilla.
 
 PARA JUGAR
 Se necesita tener descargado python https://www.python.org/downloads/
-Estar ubicado o moverse a la carpeta donde este el juego
+
+Estar ubicado o moverse a la carpeta donde este el juego.
 Desde la consola de comandos escribir las siguistes lineas:
 
 python Algogrilla.py (inicia el juego)
