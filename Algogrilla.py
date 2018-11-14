@@ -1,9 +1,4 @@
-'''
-Alumno: Emanuel Alberto Zetka
-Padron: 102134
-Corrector: Joel Saidman
-Curso: Barbara
-'''
+
 import random
 import argparse
 import datetime
@@ -64,6 +59,9 @@ def inicioJuego(palabras_elegidas, frase_aleatoria,dicDePalabras,imprimir_soluci
 			numCorrectos.sort()
 
 		imprimir(numero, palabra, palabras_elegidas, frase_aleatoria, dicDePalabras,numCorrectos,imprimir_solucion)
+		if len(numCorrectos) == len(palabras_elegidas):
+			print('FELICIDADES GANO')
+			return
 #-------------------------------------------------------------------------------
 def comprobar(numero, palabra, palabras_elegidas,numCorrectos):
 	'''compara si el numero de fila y la pabrabra que ingresa el usuario es igual
